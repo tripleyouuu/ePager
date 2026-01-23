@@ -2,21 +2,46 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 
-const BookAppointment = () => {
-    const { doctorId } = useParams();
+const RescheduleAppointment = () => {
+    const { appointmentId } = useParams();
+    const [doctors, setDoctors] = useState([]);
+    const [doctorId, setDoctorId] = useState('');
     const [date, setDate] = useState('');
     const [slots, setSlots] = useState([]);
-    const [selectedSlot, setSelectedSlot] = useState(''); // Use string for value handling
+    const [selectedSlot, setSelectedSlot] = useState('');
     const [msg, setMsg] = useState('');
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (date) {
+        const fetchData = async () => {
+            try {
+                // Fetch doctors
+                const doctorsRes = await api.get('/doctors');
+                setDoctors(doctorsRes.data);
+
+                // Fetch current appointment details to pre-fill
+                const appointmentRes = await api.get(`/appointments/${appointmentId}`);
+                if (appointmentRes.data) {
+                    setDoctorId(appointmentRes.data.doctor.id);
+                } else if (doctorsRes.data.length > 0) {
+                    setDoctorId(doctorsRes.data[0].id);
+                }
+
+            } catch (err) {
+                console.error("Error fetching data", err);
+            }
+        };
+        fetchData();
+    }, [appointmentId]);
+
+    useEffect(() => {
+        if (date && doctorId) {
             const fetchSlots = async () => {
                 try {
                     const response = await api.get(`/doctors/${doctorId}/availability?date=${date}`);
                     setSlots(response.data);
                 } catch (err) {
+                    setSlots([]);
                     console.error("Error fetching slots", err);
                 }
             };
@@ -24,26 +49,34 @@ const BookAppointment = () => {
         }
     }, [date, doctorId]);
 
-    const handleBook = async () => {
+    const handleReschedule = async () => {
         try {
-            // Need to append :00 for full LocalTime format if backend expects 09:00:00 or just 09:00
-            // Backend LocalTime usually handles HH:mm:ss or HH:mm
-            await api.post('/appointments', {
+            await api.put(`/appointments/${appointmentId}/reschedule`, {
                 doctorId,
                 date,
                 startTime: selectedSlot
             });
-            alert('Appointment Booked Successfully!');
+            alert('Appointment Rescheduled Successfully!');
             navigate('/appointments');
         } catch (err) {
-            setMsg('Error booking appointment: ' + (err.response?.data?.error || err.message));
+            setMsg('Error rescheduling: ' + (err.response?.data?.error || err.message));
         }
     };
 
     return (
         <div className="container mt-4">
-            <h2>Book Appointment</h2>
+            <h2>Reschedule Appointment</h2>
             {msg && <div className="alert alert-danger">{msg}</div>}
+
+            <div className="mb-3">
+                <label>Select Doctor (Optional):</label>
+                <select className="form-select" value={doctorId} onChange={(e) => setDoctorId(e.target.value)}>
+                    {doctors.map(doc => (
+                        <option key={doc.id} value={doc.id}>{doc.name} ({doc.specialization})</option>
+                    ))}
+                </select>
+            </div>
+
             <div className="mb-3">
                 <label>Select Date:</label>
                 <input type="date" className="form-control"
@@ -70,11 +103,11 @@ const BookAppointment = () => {
                 </div>
             )}
 
-            <button className="btn btn-primary mt-3" onClick={handleBook} disabled={!selectedSlot}>
-                Confirm Booking
+            <button className="btn btn-warning mt-3" onClick={handleReschedule} disabled={!selectedSlot}>
+                Confirm Reschedule
             </button>
         </div>
     );
 };
 
-export default BookAppointment;
+export default RescheduleAppointment;

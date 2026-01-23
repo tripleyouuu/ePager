@@ -50,9 +50,14 @@ const MyAppointments = () => {
                             <td>{app.status}</td>
                             <td>
                                 {app.status === 'BOOKED' && (
-                                    <button className="btn btn-danger btn-sm" onClick={() => handleCancel(app.id)}>
-                                        Cancel
-                                    </button>
+                                    <>
+                                        <button className="btn btn-danger btn-sm me-2" onClick={() => handleCancel(app.id)}>
+                                            Cancel
+                                        </button>
+                                        <a href={`/reschedule/${app.id}`} className="btn btn-warning btn-sm">
+                                            Reschedule
+                                        </a>
+                                    </>
                                 )}
                             </td>
                         </tr>

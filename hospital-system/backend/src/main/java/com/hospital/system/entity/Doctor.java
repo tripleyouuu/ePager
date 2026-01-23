@@ -12,6 +12,8 @@ public class Doctor {
 
     private String name;
 
+    private String email;
+
     private String specialization;
 
     private LocalTime workingStartTime = LocalTime.of(9, 0);
@@ -34,6 +36,14 @@ public class Doctor {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getSpecialization() {

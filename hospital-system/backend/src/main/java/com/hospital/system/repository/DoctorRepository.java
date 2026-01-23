@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface DoctorRepository extends MongoRepository<Doctor, String> {
     List<Doctor> findByActiveTrue();
+
+    java.util.Optional<Doctor> findByEmail(String email);
 }

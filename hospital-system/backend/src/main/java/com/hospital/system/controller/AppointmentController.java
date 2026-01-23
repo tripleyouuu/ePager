@@ -39,6 +39,15 @@ public class AppointmentController {
         return ResponseEntity.ok(appointmentService.getAppointmentsForUser(userId));
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Appointment> getAppointmentById(
+            @PathVariable String id,
+            Authentication authentication) {
+        String email = ((UserDetails) authentication.getPrincipal()).getUsername();
+        String userId = userRepository.findByEmail(email).get().getId();
+        return ResponseEntity.ok(appointmentService.getAppointmentById(id, userId));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> cancelAppointment(
             @PathVariable String id,
@@ -47,5 +56,15 @@ public class AppointmentController {
         String userId = userRepository.findByEmail(email).get().getId();
         appointmentService.cancelAppointment(id, userId);
         return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{id}/reschedule")
+    public ResponseEntity<Appointment> rescheduleAppointment(
+            @PathVariable String id,
+            @RequestBody com.hospital.system.dto.RescheduleRequest request,
+            Authentication authentication) {
+        String email = ((UserDetails) authentication.getPrincipal()).getUsername();
+        String userId = userRepository.findByEmail(email).get().getId();
+        return ResponseEntity.ok(appointmentService.rescheduleAppointment(id, userId, request));
     }
 }

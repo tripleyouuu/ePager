@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.time.LocalTime;
 
 @RestController
 @RequestMapping("/api/doctors")
@@ -25,9 +24,17 @@ public class DoctorController {
     }
 
     @GetMapping("/{doctorId}/availability")
-    public ResponseEntity<List<LocalTime>> getAvailability(
+    public ResponseEntity<List<com.hospital.system.dto.SlotDTO>> getAvailability(
             @PathVariable String doctorId,
             @RequestParam String date) {
         return ResponseEntity.ok(doctorService.getAvailableSlots(doctorId, LocalDate.parse(date)));
+    }
+
+    @GetMapping("/appointments")
+    public ResponseEntity<List<com.hospital.system.entity.DoctorSchedule>> getDoctorAppointments(
+            org.springframework.security.core.Authentication authentication) {
+        String email = ((org.springframework.security.core.userdetails.UserDetails) authentication.getPrincipal())
+                .getUsername();
+        return ResponseEntity.ok(doctorService.getDoctorAppointments(email));
     }
 }

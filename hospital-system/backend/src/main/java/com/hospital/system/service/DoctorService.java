@@ -5,6 +5,7 @@ import com.hospital.system.entity.AppointmentStatus;
 import com.hospital.system.entity.Doctor;
 import com.hospital.system.repository.AppointmentRepository;
 import com.hospital.system.repository.DoctorRepository;
+import com.hospital.system.repository.DoctorScheduleRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -14,14 +15,18 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@SuppressWarnings("null")
 public class DoctorService {
 
+    private final DoctorScheduleRepository doctorScheduleRepository;
     private final DoctorRepository doctorRepository;
     private final AppointmentRepository appointmentRepository;
 
-    public DoctorService(DoctorRepository doctorRepository, AppointmentRepository appointmentRepository) {
+    public DoctorService(DoctorRepository doctorRepository, AppointmentRepository appointmentRepository,
+            DoctorScheduleRepository doctorScheduleRepository) {
         this.doctorRepository = doctorRepository;
         this.appointmentRepository = appointmentRepository;
+        this.doctorScheduleRepository = doctorScheduleRepository;
     }
 
     public List<Doctor> getAllDoctors() {
@@ -32,7 +37,7 @@ public class DoctorService {
         return doctorRepository.findById(id).orElseThrow(() -> new RuntimeException("Doctor not found"));
     }
 
-    public List<LocalTime> getAvailableSlots(String doctorId, LocalDate date) {
+    public List<com.hospital.system.dto.SlotDTO> getAvailableSlots(String doctorId, LocalDate date) {
         Doctor doctor = getDoctorById(doctorId);
         List<Appointment> appointments = appointmentRepository.findByDoctorIdAndAppointmentDate(doctorId, date);
 
@@ -41,16 +46,21 @@ public class DoctorService {
                 .map(Appointment::getStartTime)
                 .collect(Collectors.toList());
 
-        List<LocalTime> availableSlots = new ArrayList<>();
+        List<com.hospital.system.dto.SlotDTO> allSlots = new ArrayList<>();
         LocalTime current = doctor.getWorkingStartTime();
 
         while (current.isBefore(doctor.getWorkingEndTime())) {
-            if (!bookedSlots.contains(current)) {
-                availableSlots.add(current);
-            }
+            String status = bookedSlots.contains(current) ? "BOOKED" : "AVAILABLE";
+            allSlots.add(new com.hospital.system.dto.SlotDTO(current, status));
             current = current.plusHours(1);
         }
 
-        return availableSlots;
+        return allSlots;
+    }
+
+    public List<com.hospital.system.entity.DoctorSchedule> getDoctorAppointments(String doctorEmail) {
+        Doctor doctor = doctorRepository.findByEmail(doctorEmail)
+                .orElseThrow(() -> new RuntimeException("Doctor not found for email: " + doctorEmail));
+        return doctorScheduleRepository.findByDoctorId(doctor.getId());
     }
 }

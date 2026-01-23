@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Navigate } from 'react-router-dom';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 
@@ -7,15 +7,29 @@ const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const { login } = useAuth();
+    const { login, user } = useAuth();
     const navigate = useNavigate();
+
+    // Auto-redirect if already logged in
+    if (user) {
+        if (user.role === 'DOCTOR') {
+            return <Navigate to="/doctor-dashboard" />;
+        } else {
+            return <Navigate to="/dashboard" />;
+        }
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
             const response = await api.post('/auth/login', { email, password });
-            login(response.data);
-            navigate('/');
+            const userData = response.data;
+            login(userData);
+            if (userData.role === 'DOCTOR') {
+                navigate('/doctor-dashboard');
+            } else {
+                navigate('/dashboard');
+            }
         } catch (err) {
             setError('Invalid credentials');
         }

@@ -21,9 +21,15 @@ const Navbar = () => {
                                 <li className="nav-item">
                                     <span className="nav-link text-white">Welcome, {user.name}</span>
                                 </li>
-                                <li className="nav-item">
-                                    <Link className="nav-link" to="/appointments">My Appointments</Link>
-                                </li>
+                                {user.role === 'DOCTOR' ? (
+                                    <li className="nav-item">
+                                        <Link className="nav-link" to="/doctor-dashboard">Doctor Dashboard</Link>
+                                    </li>
+                                ) : (
+                                    <li className="nav-item">
+                                        <Link className="nav-link" to="/appointments">My Appointments</Link>
+                                    </li>
+                                )}
                                 <li className="nav-item">
                                     <button className="btn btn-link nav-link" onClick={handleLogout}>Logout</button>
                                 </li>
