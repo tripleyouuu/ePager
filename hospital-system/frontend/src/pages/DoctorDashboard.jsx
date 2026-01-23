@@ -38,9 +38,9 @@ const DoctorDashboard = () => {
                         <tbody>
                             {appointments.length > 0 ? appointments.map(app => (
                                 <tr key={app.id}>
-                                    <td>{app.appointmentDate}</td>
+                                    <td>{app.date}</td>
                                     <td>{app.startTime}</td>
-                                    <td>{app.user ? app.user.name : 'Unknown'}</td>
+                                    <td>{app.patientName || 'Unknown'}</td>
                                     <td>
                                         <span className={`badge ${app.status === 'BOOKED' ? 'bg-primary' : 'bg-danger'}`}>
                                             {app.status}
