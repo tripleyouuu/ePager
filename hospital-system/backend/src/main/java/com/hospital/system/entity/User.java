@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 
+// represents a system user
 @Document(collection = "users")
 public class User {
     @Id

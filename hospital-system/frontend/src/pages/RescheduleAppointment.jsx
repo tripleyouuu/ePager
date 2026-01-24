@@ -1,3 +1,4 @@
+// reschedule appointment page
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Calendar from 'react-calendar';
@@ -9,11 +10,11 @@ const RescheduleAppointment = () => {
     const [date, setDate] = useState(null);
     const [slots, setSlots] = useState([]);
     const [selectedSlot, setSelectedSlot] = useState('');
-    const [doctorId, setDoctorId] = useState(null); // We need this to fetch availability
+    const [doctorId, setDoctorId] = useState(null); // fetch availability doctor id
     const { showAlert } = useAlert();
     const navigate = useNavigate();
 
-    // Helper to format date
+    // date formatter
     const formatDate = (dateObj) => {
         return dateObj.toISOString().split('T')[0];
     };
@@ -23,7 +24,7 @@ const RescheduleAppointment = () => {
         return timeStr.split(':').slice(0, 2).join(':');
     };
 
-    // Initialize: Fetch appointment details to get the doctor ID
+    // fetch appointment details
     useEffect(() => {
         const fetchAppointmentDetails = async () => {
             try {
@@ -41,7 +42,7 @@ const RescheduleAppointment = () => {
         fetchAppointmentDetails();
     }, [appointmentId, showAlert]);
 
-    // Fetch slots when date and doctor are available
+    // fetch available slots
     useEffect(() => {
         if (date && doctorId) {
             const dateStr = formatDate(date);
@@ -65,7 +66,7 @@ const RescheduleAppointment = () => {
 
         try {
             await api.put(`/appointments/${appointmentId}/reschedule`, {
-                doctorId, // Keeping the same doctor
+                doctorId, // request payload
                 date: formatDate(date),
                 startTime: selectedSlot
             });

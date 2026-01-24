@@ -2,6 +2,7 @@ package com.hospital.system.dto;
 
 import com.hospital.system.entity.Role;
 
+// authentication response payload
 public class AuthResponse {
     private String token;
     private String userId;

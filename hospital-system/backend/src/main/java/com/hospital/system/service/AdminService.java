@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalTime;
 import java.util.List;
 
+// handles administrative tasks
 @Service
 public class AdminService {
 
@@ -40,7 +41,7 @@ public class AdminService {
 
     @Transactional
     public Doctor createDoctor(DoctorRegistrationRequest request) {
-        // Create User
+        // creates user account
         User user = new User();
         user.setName(request.getName());
         user.setEmail(request.getEmail());
@@ -48,13 +49,13 @@ public class AdminService {
         user.setRole(Role.DOCTOR);
         userRepository.save(user);
 
-        // Create Doctor
+        // creates doctor profile
         Doctor doctor = new Doctor();
         doctor.setName(request.getName());
         doctor.setSpecialization(request.getSpecialization());
         doctor.setEmail(request.getEmail());
         doctor.setWorkingStartTime(LocalTime.of(9, 0));
-        doctor.setWorkingEndTime(LocalTime.of(17, 0)); // Default hours
+        doctor.setWorkingEndTime(LocalTime.of(17, 0)); // default working hours
         return doctorRepository.save(doctor);
     }
 
@@ -65,20 +66,19 @@ public class AdminService {
         Doctor doctor = doctorRepository.findById(doctorId)
                 .orElseThrow(() -> new RuntimeException("Doctor not found"));
 
-        // Mark associated appointments as UNAVAILABLE
+        // marks appointments unavailable
         List<com.hospital.system.entity.Appointment> appointments = appointmentRepository.findByDoctorId(doctorId);
         for (com.hospital.system.entity.Appointment app : appointments) {
             app.setStatus(com.hospital.system.entity.AppointmentStatus.UNAVAILABLE);
-            // We keep the doctor reference for now, but since we delete the doctor, it will
-            // become broken.
-            // On fetch, Spring Data Mongo normally sets fields with missing DBRefs to null.
+            // keeps doctor ref temporarily
+            // on fetch, spring data mongo normally sets fields with missing dbrefs to null.
             appointmentRepository.save(app);
         }
 
-        // Delete associated User
+        // deletes associated user
         userRepository.findByEmail(doctor.getEmail()).ifPresent(userRepository::delete);
 
-        // Delete Doctor
+        // deletes doctor profile
         doctorRepository.deleteById(doctorId);
     }
 
@@ -87,6 +87,6 @@ public class AdminService {
         if (userId == null)
             return;
         userRepository.deleteById(userId);
-        // Cascading deletes for appointments ideally
+        // pending cascade delete
     }
 }

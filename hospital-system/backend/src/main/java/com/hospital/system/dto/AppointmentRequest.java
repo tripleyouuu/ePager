@@ -3,6 +3,7 @@ package com.hospital.system.dto;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+// appointment booking request
 public class AppointmentRequest {
     private String doctorId;
     private LocalDate date;

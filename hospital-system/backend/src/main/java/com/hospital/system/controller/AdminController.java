@@ -11,12 +11,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+// handles admin operations and oversight
 @RestController
 @RequestMapping("/api/admin")
 public class AdminController {
 
     private final AdminService adminService;
-    private final AppointmentRepository appointmentRepository; // Direct usage for now or via service
+    private final AppointmentRepository appointmentRepository;
 
     public AdminController(AdminService adminService, AppointmentRepository appointmentRepository) {
         this.adminService = adminService;

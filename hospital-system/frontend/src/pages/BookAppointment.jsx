@@ -1,3 +1,4 @@
+// appointment booking page
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Calendar from 'react-calendar';
@@ -12,7 +13,7 @@ const BookAppointment = () => {
     const { showAlert } = useAlert();
     const navigate = useNavigate();
 
-    // Helper to format date as YYYY-MM-DD for backend
+    // date formatter
     const formatDate = (dateObj) => {
         return dateObj.toISOString().split('T')[0];
     };
@@ -24,7 +25,7 @@ const BookAppointment = () => {
                 try {
                     const response = await api.get(`/doctors/${doctorId}/availability?date=${dateStr}`);
                     setSlots(response.data);
-                    setSelectedSlot(''); // Reset slot on date change
+                    setSelectedSlot(''); // reset slot
                 } catch (err) {
                     console.error("Error fetching slots", err);
                     showAlert("Failed to fetch available slots. Please try again.", "error");
@@ -52,7 +53,7 @@ const BookAppointment = () => {
         }
     };
 
-    // Disable past dates and dates beyond 7 days
+    // disable invalid dates
     const tileDisabled = ({ date, view }) => {
         if (view === 'month') {
             const today = new Date();

@@ -1,3 +1,4 @@
+// admin dashboard
 import { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { useAlert } from '../context/AlertContext';
@@ -10,7 +11,7 @@ const AdminDashboard = () => {
     const [selectedEntityId, setSelectedEntityId] = useState(null);
     const { showAlert } = useAlert();
 
-    // New Doctor Form State
+    // new doctor form state
     const [newDoctor, setNewDoctor] = useState({
         name: '',
         email: '',
@@ -202,7 +203,7 @@ const AdminDashboard = () => {
                 ) : <p className="text-center mt-3">No patients found.</p>
             )}
 
-            {/* Appointment Viewer Section */}
+            {/* appointment viewer */}
             {selectedEntityId && (
                 <div className="mt-4 card">
                     <h3>Appointments for Selected User</h3>

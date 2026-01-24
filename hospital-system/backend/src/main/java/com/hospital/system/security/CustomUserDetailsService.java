@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 
+// loads user details from db
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 

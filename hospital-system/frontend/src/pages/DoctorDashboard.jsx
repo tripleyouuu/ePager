@@ -1,3 +1,4 @@
+// doctor dashboard
 import { useState, useEffect } from 'react';
 import api from '../api/axios';
 
@@ -14,7 +15,7 @@ const DoctorDashboard = () => {
             }
         };
 
-        // Poll every 5 seconds for real-time updates
+        // poll for updates
         fetchAppointments();
         const interval = setInterval(fetchAppointments, 5000);
         return () => clearInterval(interval);

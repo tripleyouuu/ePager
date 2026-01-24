@@ -3,6 +3,7 @@ package com.hospital.system.dto;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+// rescheduling request
 public class RescheduleRequest {
     private String doctorId;
     private LocalDate date;

@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+// represents an appointment booking
 @Document(collection = "appointments")
 public class Appointment {
     @Id

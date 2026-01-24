@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+// handles appointment business logic
 @Service
 @SuppressWarnings("null")
 public class AppointmentService {
@@ -69,7 +70,7 @@ public class AppointmentService {
 
         Appointment saved = appointmentRepository.save(appointment);
 
-        // Sync to DoctorSchedule
+        // syncs with doctor schedule
         DoctorSchedule schedule = new DoctorSchedule();
         schedule.setDoctorId(doctor.getId());
         schedule.setAppointmentId(saved.getId());
@@ -111,7 +112,7 @@ public class AppointmentService {
         appointment.setStatus(AppointmentStatus.CANCELLED);
         appointmentRepository.save(appointment);
 
-        // Sync to DoctorSchedule
+        // syncs with doctor schedule
         doctorScheduleRepository.findByAppointmentId(appointmentId).ifPresent(schedule -> {
             schedule.setStatus("CANCELLED");
             doctorScheduleRepository.save(schedule);
@@ -151,7 +152,7 @@ public class AppointmentService {
 
         Appointment saved = appointmentRepository.save(appointment);
 
-        // Sync to DoctorSchedule
+        // syncs with doctor schedule
         doctorScheduleRepository.findByAppointmentId(appointmentId).ifPresent(schedule -> {
             schedule.setDoctorId(appointment.getDoctor().getId());
             schedule.setDate(appointment.getAppointmentDate());

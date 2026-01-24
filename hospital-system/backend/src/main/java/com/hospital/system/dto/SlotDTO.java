@@ -2,9 +2,10 @@ package com.hospital.system.dto;
 
 import java.time.LocalTime;
 
+// time slot transfer object
 public class SlotDTO {
     private LocalTime time;
-    private String status; // "AVAILABLE" or "BOOKED"
+    private String status; // available or booked
 
     public SlotDTO(LocalTime time, String status) {
         this.time = time;

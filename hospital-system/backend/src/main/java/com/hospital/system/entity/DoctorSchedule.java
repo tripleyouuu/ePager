@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.LocalDateTime;
 
+// represents doctor's schedule
 @Document(collection = "doctor_schedules")
 public class DoctorSchedule {
 
@@ -18,7 +19,7 @@ public class DoctorSchedule {
     private String doctorId;
 
     @Indexed(unique = true)
-    private String appointmentId; // Link to the main appointment
+    private String appointmentId; // link to appointment
 
     private String patientName;
 
@@ -26,7 +27,7 @@ public class DoctorSchedule {
 
     private LocalTime startTime;
 
-    private String status; // BOOKED, CANCELLED
+    private String status; // appointment status
 
     private LocalDateTime msgTimestamp = LocalDateTime.now();
 

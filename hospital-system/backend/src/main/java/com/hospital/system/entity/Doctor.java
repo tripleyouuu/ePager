@@ -5,6 +5,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalTime;
 
+// represents a doctor profile
 @Document(collection = "doctors")
 public class Doctor {
     @Id

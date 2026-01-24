@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalTime;
 
+// initializes application data
 @Configuration
 public class DataInitializer {
 
@@ -19,11 +20,11 @@ public class DataInitializer {
         public CommandLineRunner initData(DoctorRepository doctorRepository, UserRepository userRepository,
                         PasswordEncoder passwordEncoder) {
                 return args -> {
-                        // clear existing data to fix inconsistencies
+                        // clear data for reset
                         doctorRepository.deleteAll();
                         userRepository.deleteAll();
 
-                        // Create 5 doctors
+                        // creates initial doctors
                         createDoctor(doctorRepository, userRepository, passwordEncoder, "Dr. Alice Smith", "Cardiology",
                                         "alice@hospital.com");
                         createDoctor(doctorRepository, userRepository, passwordEncoder, "Dr. Bob Jones", "Dermatology",
@@ -38,7 +39,7 @@ public class DataInitializer {
 
                         System.out.println("Database reset and Doctors seeded successfully");
 
-                        // Create Admin
+                        // creates admin user
                         createAdmin(userRepository, passwordEncoder, "Admin", "admin@hospital.com");
                         System.out.println("Admin seeded successfully");
                 };
@@ -58,7 +59,7 @@ public class DataInitializer {
 
         private void createDoctor(DoctorRepository doctorRepository, UserRepository userRepository,
                         PasswordEncoder passwordEncoder, String name, String specialization, String email) {
-                // Create Doctor entity
+                // creates doctor profile
                 Doctor doctor = new Doctor();
                 doctor.setName(name);
                 doctor.setSpecialization(specialization);
@@ -67,11 +68,11 @@ public class DataInitializer {
                 doctor.setWorkingEndTime(LocalTime.of(15, 0));
                 doctorRepository.save(doctor);
 
-                // Create User entity for login
+                // creates doctor login
                 User user = new User();
                 user.setName(name);
                 user.setEmail(email);
-                user.setPassword(passwordEncoder.encode("password")); // Default password
+                user.setPassword(passwordEncoder.encode("password")); // default password
                 user.setRole(Role.DOCTOR);
                 userRepository.save(user);
         }

@@ -1,5 +1,6 @@
 package com.hospital.system.dto;
 
+// authentication request payload
 public class AuthRequest {
     private String email;
     private String password;

@@ -1,3 +1,4 @@
+// alert context provider
 import { createContext, useContext, useState, useCallback } from 'react';
 import Modal from '../components/Modal';
 
@@ -15,13 +16,7 @@ export const AlertProvider = ({ children }) => {
     });
 
     const showAlert = useCallback((message, type = 'info', onConfirm = null) => {
-        // If type is 'info' and onConfirm is passed, treat it as onClose callback
-        // Or strictly adhere to signature. Let's support an explicit onClose or just use onConfirm for both.
-        // The user requirement implies that for 'info', the action happens on close.
-        // Let's modify state to hold an onCloseCallback.
-
-        // Actually, simpler: if type is 'info', onConfirm is essentially "on acknowledge".
-        // Let's wrap closeAlert to call onConfirm if it exists and type is info.
+        // handles alert display logic
 
         setAlertState({
             isOpen: true,
@@ -31,15 +26,14 @@ export const AlertProvider = ({ children }) => {
                 onConfirm();
                 closeAlert();
             } : null,
-            // Store raw callback for info auto-close
+            // store raw callback for info auto-close
             rawOnConfirm: onConfirm
         });
     }, []);
 
     const closeAlert = useCallback(() => {
         setAlertState(prev => {
-            // For info alerts, if there was a callback passed (as onConfirm), execute it now on close
-            // This covers both auto-close and manual close button
+            // execute callback on close if present
             if (prev.type === 'info' && prev.rawOnConfirm) {
                 prev.rawOnConfirm();
             }

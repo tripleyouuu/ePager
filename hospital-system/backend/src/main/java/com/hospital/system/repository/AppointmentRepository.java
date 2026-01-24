@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
+// appointment repository interface
 public interface AppointmentRepository extends MongoRepository<Appointment, String> {
     List<Appointment> findByDoctorIdAndAppointmentDate(String doctorId, LocalDate appointmentDate);
 

@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+// handles doctor business logic
 @Service
 @SuppressWarnings("null")
 public class DoctorService {

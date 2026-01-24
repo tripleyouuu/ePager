@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
 
+// handles doctor-related operations
 @RestController
 @RequestMapping("/api/doctors")
 public class DoctorController {

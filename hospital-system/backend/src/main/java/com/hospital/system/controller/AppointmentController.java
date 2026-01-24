@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+// handles appointment booking and management
 @RestController
 @RequestMapping("/api/appointments")
 public class AppointmentController {

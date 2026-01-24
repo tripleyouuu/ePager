@@ -1,3 +1,4 @@
+// login page
 import { useState } from 'react';
 import { useNavigate, Navigate } from 'react-router-dom';
 import api from '../api/axios';
@@ -11,7 +12,7 @@ const Login = () => {
     const { showAlert } = useAlert();
     const navigate = useNavigate();
 
-    // Auto-redirect if already logged in
+    // redirect if logged in
     if (user) {
         if (user.role === 'DOCTOR') {
             return <Navigate to="/doctor-dashboard" />;
@@ -29,7 +30,7 @@ const Login = () => {
             const userData = response.data;
             login(userData);
 
-            // Navigate based on role
+            // role-based navigation
             const target = userData.role === 'DOCTOR' ? '/doctor-dashboard' :
                 userData.role === 'ADMIN' ? '/admin-dashboard' :
                     '/dashboard';

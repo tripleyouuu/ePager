@@ -2,6 +2,7 @@ package com.hospital.system.dto;
 
 import com.hospital.system.entity.Role;
 
+// registration request payload
 public class RegisterRequest {
     private String name;
     private String email;

@@ -12,6 +12,7 @@ import java.security.Key;
 import java.util.Date;
 import java.util.function.Function;
 
+// jwt utility class
 @Component
 public class JwtUtil {
 

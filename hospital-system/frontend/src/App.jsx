@@ -1,3 +1,4 @@
+// main application router
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Login from './pages/Login';
@@ -15,7 +16,7 @@ const RoleRoute = ({ children, allowedRoles }) => {
     const { user } = useAuth();
     if (!user) return <Navigate to="/login" />;
     if (!allowedRoles.includes(user.role)) {
-        // Redirect to their appropriate dashboard if they try to access unauthorized route
+        // unauthorized redirect
         if (user.role === 'DOCTOR') return <Navigate to="/doctor-dashboard" />;
         if (user.role === 'ADMIN') return <Navigate to="/admin-dashboard" />;
         return <Navigate to="/dashboard" />;
@@ -73,7 +74,7 @@ function App() {
                             </RoleRoute>
                         } />
 
-                        {/* Fallback for Dashboard route if meant for generic or patient */}
+                        {/* dashboard fallback */}
                         <Route path="/dashboard" element={
                             <RoleRoute allowedRoles={['USER']}>
                                 <Dashboard />

@@ -1,12 +1,12 @@
 package com.hospital.system.dto;
 
+// doctor registration request
 public class DoctorRegistrationRequest {
     private String name;
     private String email;
     private String password;
     private String specialization;
 
-    // Getters and Setters
     public String getName() {
         return name;
     }
