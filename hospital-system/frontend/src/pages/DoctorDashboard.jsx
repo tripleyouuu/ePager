@@ -26,7 +26,6 @@ const DoctorDashboard = () => {
             <h2>Doctor Dashboard</h2>
             <div className="card shadow">
                 <div className="card-body">
-                    <h5 className="card-title">Upcoming Appointments</h5>
                     {appointments.length > 0 ? (
                         <>
                             <h4 className="mb-3">Upcoming Appointments</h4>
@@ -63,7 +62,8 @@ const DoctorDashboard = () => {
                                 </table>
                             </div>
 
-                            <h4 className="mb-3">Appointment History & Cancelled</h4>
+                            <br/>
+                            <h4 className="mb-3">Cancelled Appointments</h4>
                             <div style={{ overflowX: 'auto' }}>
                                 <table className="table" style={{ width: '100%', borderCollapse: 'collapse', backgroundColor: 'white', borderRadius: '8px', overflow: 'hidden', boxShadow: '0 4px 6px rgba(0,0,0,0.05)' }}>
                                     <thead style={{ backgroundColor: '#636e72', color: 'white' }}>
