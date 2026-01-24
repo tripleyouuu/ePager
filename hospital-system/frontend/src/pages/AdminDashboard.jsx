@@ -9,6 +9,7 @@ const AdminDashboard = () => {
     const [patients, setPatients] = useState([]);
     const [appointments, setAppointments] = useState([]);
     const [selectedEntityId, setSelectedEntityId] = useState(null);
+    const [selectedEntityName, setSelectedEntityName] = useState('');
     const { showAlert } = useAlert();
 
     // new doctor form state
@@ -50,11 +51,12 @@ const AdminDashboard = () => {
 
     // ... existing code ...
 
-    const fetchAppointments = async (id, type) => {
+    const fetchAppointments = async (id, type, name) => {
         try {
             const res = await api.get(`/admin/appointments/${type}/${id}`);
             setAppointments(res.data);
             setSelectedEntityId(id);
+            setSelectedEntityName(name);
             // scroll to appointments table
             setTimeout(() => {
                 appointmentsRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -179,7 +181,7 @@ const AdminDashboard = () => {
                                             <td style={{ padding: '12px 15px' }}>{doc.specialization}</td>
                                             <td style={{ padding: '12px 15px' }}>{doc.email}</td>
                                             <td style={{ padding: '12px 15px' }}>
-                                                <button className="btn btn-secondary btn-sm me-2" onClick={() => fetchAppointments(doc.id, 'doctor')} style={{ marginRight: '8px' }}>
+                                                <button className="btn btn-secondary btn-sm me-2" onClick={() => fetchAppointments(doc.id, 'doctor', doc.name)} style={{ marginRight: '8px' }}>
                                                     View Appts
                                                 </button>
                                                 <button className="btn btn-danger btn-sm" onClick={() => handleDeleteDoctor(doc.id)}>
@@ -212,7 +214,7 @@ const AdminDashboard = () => {
                                         <td style={{ padding: '12px 15px' }}>{p.name}</td>
                                         <td style={{ padding: '12px 15px' }}>{p.email}</td>
                                         <td style={{ padding: '12px 15px' }}>
-                                            <button className="btn btn-secondary btn-sm me-2" onClick={() => fetchAppointments(p.id, 'patient')} style={{ marginRight: '8px' }}>
+                                            <button className="btn btn-secondary btn-sm me-2" onClick={() => fetchAppointments(p.id, 'patient', p.name)} style={{ marginRight: '8px' }}>
                                                 View Appts
                                             </button>
                                             <button className="btn btn-danger btn-sm" onClick={() => handleDeletePatient(p.id)}>
@@ -230,7 +232,7 @@ const AdminDashboard = () => {
             {/* appointment viewer */}
             {selectedEntityId && (
                 <div className="mt-4 card" ref={appointmentsRef}>
-                    <h3>Appointments for Selected User</h3>
+                    <h3>Appointments for {selectedEntityName}</h3>
                     {appointments.length > 0 ? (
                         <div style={{ overflowX: 'auto' }}>
                             <table className="table" style={{ width: '100%', borderCollapse: 'collapse', backgroundColor: 'white', borderRadius: '8px', overflow: 'hidden', boxShadow: '0 4px 6px rgba(0,0,0,0.05)' }}>

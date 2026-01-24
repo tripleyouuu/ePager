@@ -40,7 +40,7 @@ const Navbar = () => {
                             <>
                                 <li className="nav-item">
                                     <span className="nav-link" style={{ cursor: 'default' }}>
-                                        {user.role === 'DOCTOR' ? `Welcome, Dr. ${user.name}!` :
+                                        {user.role === 'DOCTOR' ? `Welcome, ${user.name}!` :
                                             user.role === 'ADMIN' ? 'Welcome, Admin' :
                                                 `Welcome, ${user.name}!`}
                                     </span>

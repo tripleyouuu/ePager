@@ -86,6 +86,14 @@ public class AdminService {
     public void deletePatient(String userId) {
         if (userId == null)
             return;
+
+        // marks appointments unavailable
+        List<com.hospital.system.entity.Appointment> appointments = appointmentRepository.findByUserId(userId);
+        for (com.hospital.system.entity.Appointment app : appointments) {
+            app.setStatus(com.hospital.system.entity.AppointmentStatus.UNAVAILABLE);
+            appointmentRepository.save(app);
+        }
+
         userRepository.deleteById(userId);
         // pending cascade delete
     }
