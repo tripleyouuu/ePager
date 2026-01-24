@@ -1,4 +1,273 @@
-/* Basic reset if needed, but Bootstrap covers most */
+:root {
+    /* Branding Colors */
+    --primary-color: #6c5ce7;
+    /* Soft Purple */
+    --primary-dark: #5849be;
+    --secondary-color: #0984e3;
+    /* Bright Blue */
+    --accent-color: #a29bfe;
+    /* Light Purple accent */
+    --background-bg: #f8f9fa;
+    --surface-bg: #ffffff;
+    --text-primary: #2d3436;
+    --text-secondary: #636e72;
+    --danger-color: #ff7675;
+    --success-color: #55efc4;
+
+    /* Fonts */
+    --font-family: 'Work Sans', sans-serif;
+
+    /* Spacing */
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --spacing-xl: 32px;
+
+    /* Border Radius */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 16px;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
 body {
-    background-color: #f8f9fa;
+    font-family: var(--font-family);
+    background-color: var(--background-bg);
+    color: var(--text-primary);
+    line-height: 1.6;
+}
+
+/* Typography */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-weight: 600;
+    margin-bottom: var(--spacing-md);
+    color: var(--primary-dark);
+}
+
+a {
+    text-decoration: none;
+    color: var(--primary-color);
+    transition: color 0.2s;
+}
+
+a:hover {
+    color: var(--primary-dark);
+}
+
+/* Utilities */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--spacing-md);
+}
+
+.d-flex {
+    display: flex;
+}
+
+.flex-column {
+    flex-direction: column;
+}
+
+.align-items-center {
+    align-items: center;
+}
+
+.justify-content-between {
+    justify-content: space-between;
+}
+
+.gap-2 {
+    gap: var(--spacing-sm);
+}
+
+.gap-3 {
+    gap: var(--spacing-md);
+}
+
+.mt-3 {
+    margin-top: var(--spacing-md);
+}
+
+.mt-4 {
+    margin-top: var(--spacing-lg);
+}
+
+.mb-3 {
+    margin-bottom: var(--spacing-md);
+}
+
+.text-center {
+    text-align: center;
+}
+
+.w-100 {
+    width: 100%;
+}
+
+/* Buttons */
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    font-family: var(--font-family);
+    font-weight: 500;
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 1rem;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+}
+
+.btn-primary:hover {
+    opacity: 0.9;
+}
+
+.btn-secondary {
+    background-color: #dfe6e9;
+    color: var(--text-primary);
+}
+
+.btn-outline-primary {
+    background: transparent;
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.btn-danger {
+    background-color: var(--danger-color);
+    color: white;
+}
+
+.btn-disabled,
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+/* Forms */
+.form-control {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid #dfe6e9;
+    border-radius: var(--radius-md);
+    font-family: var(--font-family);
+    font-size: 1rem;
+    transition: border-color 0.2s;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1);
+}
+
+.card {
+    background: var(--surface-bg);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+    margin-bottom: var(--spacing-md);
+}
+
+/* Navbar */
+.navbar {
+    background: linear-gradient(90deg, var(--primary-dark) 0%, var(--primary-color) 100%);
+    padding: var(--spacing-md) 0;
+    color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.navbar .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: white !important;
+}
+
+.navbar-brand img {
+    height: 40px;
+}
+
+.navbar-nav {
+    display: flex;
+    list-style: none;
+    gap: var(--spacing-md);
+    align-items: center;
+}
+
+.nav-link {
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
+}
+
+.nav-link:hover {
+    color: white;
+}
+
+/* Calendar Overrides */
+.react-calendar {
+    width: 350px !important;
+    max-width: 100%;
+    background: white;
+    border: none !important;
+    font-family: var(--font-family) !important;
+    line-height: 1.125em;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+}
+
+.react-calendar__navigation button {
+    color: var(--primary-color);
+    min-width: 44px;
+    background: none;
+    font-size: 16px;
+    margin-top: 8px;
+}
+
+.react-calendar__tile--active {
+    background: var(--primary-color) !important;
+    color: white;
+    border-radius: var(--radius-sm);
+}
+
+.react-calendar__tile--now {
+    background: #dfe6e9;
+    border-radius: var(--radius-sm);
 }

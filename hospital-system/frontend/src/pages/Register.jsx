@@ -2,11 +2,12 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
+import { useAlert } from '../context/AlertContext';
 
 const Register = () => {
     const [formData, setFormData] = useState({ name: '', email: '', password: '' });
-    const [error, setError] = useState('');
     const { login } = useAuth();
+    const { showAlert } = useAlert();
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
@@ -14,39 +15,38 @@ const Register = () => {
         try {
             const response = await api.post('/auth/register', formData);
             login(response.data);
+            showAlert('Registration successful! Welcome to ePager.', 'info');
             navigate('/');
         } catch (err) {
-            setError(err.response?.data?.message || 'Registration failed');
+            showAlert(err.response?.data?.message || 'Registration failed', 'error');
         }
     };
 
     return (
-        <div className="container mt-5">
-            <div className="row justify-content-center">
-                <div className="col-md-6">
-                    <div className="card">
-                        <div className="card-header">Register</div>
-                        <div className="card-body">
-                            {error && <div className="alert alert-danger">{error}</div>}
-                            <form onSubmit={handleSubmit}>
-                                <div className="mb-3">
-                                    <label>Name</label>
-                                    <input type="text" className="form-control"
-                                        value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} required />
-                                </div>
-                                <div className="mb-3">
-                                    <label>Email</label>
-                                    <input type="email" className="form-control"
-                                        value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} required />
-                                </div>
-                                <div className="mb-3">
-                                    <label>Password</label>
-                                    <input type="password" className="form-control"
-                                        value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} required />
-                                </div>
-                                <button type="submit" className="btn btn-primary w-100">Register</button>
-                            </form>
+        <div className="container mt-4">
+            <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '80vh' }}>
+                <div className="card" style={{ width: '100%', maxWidth: '400px' }}>
+                    <h2 className="text-center mb-3">Register</h2>
+                    <form onSubmit={handleSubmit}>
+                        <div className="mb-3">
+                            <label>Name</label>
+                            <input type="text" className="form-control"
+                                value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} required />
                         </div>
+                        <div className="mb-3">
+                            <label>Email</label>
+                            <input type="email" className="form-control"
+                                value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} required />
+                        </div>
+                        <div className="mb-3">
+                            <label>Password</label>
+                            <input type="password" className="form-control"
+                                value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} required />
+                        </div>
+                        <button type="submit" className="btn btn-primary w-100">Register</button>
+                    </form>
+                    <div className="mt-3 text-center">
+                        <small>Already have an account? <a href="/login">Login</a></small>
                     </div>
                 </div>
             </div>

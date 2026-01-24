@@ -2,12 +2,13 @@ import { useState } from 'react';
 import { useNavigate, Navigate } from 'react-router-dom';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
+import { useAlert } from '../context/AlertContext';
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
     const { login, user } = useAuth();
+    const { showAlert } = useAlert();
     const navigate = useNavigate();
 
     // Auto-redirect if already logged in
@@ -27,40 +28,38 @@ const Login = () => {
             const response = await api.post('/auth/login', { email, password });
             const userData = response.data;
             login(userData);
-            if (userData.role === 'DOCTOR') {
-                navigate('/doctor-dashboard');
-            } else if (userData.role === 'ADMIN') {
-                navigate('/admin-dashboard');
-            } else {
-                navigate('/dashboard');
-            }
+
+            // Navigate based on role
+            const target = userData.role === 'DOCTOR' ? '/doctor-dashboard' :
+                userData.role === 'ADMIN' ? '/admin-dashboard' :
+                    '/dashboard';
+
+            navigate(target);
         } catch (err) {
-            setError('Invalid credentials');
+            showAlert('Invalid credentials. Please check your email and password.', 'error');
         }
     };
 
     return (
-        <div className="container mt-5">
-            <div className="row justify-content-center">
-                <div className="col-md-6">
-                    <div className="card">
-                        <div className="card-header">Login</div>
-                        <div className="card-body">
-                            {error && <div className="alert alert-danger">{error}</div>}
-                            <form onSubmit={handleSubmit}>
-                                <div className="mb-3">
-                                    <label>Email</label>
-                                    <input type="email" className="form-control"
-                                        value={email} onChange={(e) => setEmail(e.target.value)} required />
-                                </div>
-                                <div className="mb-3">
-                                    <label>Password</label>
-                                    <input type="password" className="form-control"
-                                        value={password} onChange={(e) => setPassword(e.target.value)} required />
-                                </div>
-                                <button type="submit" className="btn btn-primary w-100">Login</button>
-                            </form>
+        <div className="container mt-4">
+            <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '80vh' }}>
+                <div className="card" style={{ width: '100%', maxWidth: '400px' }}>
+                    <h2 className="text-center mb-3">Login</h2>
+                    <form onSubmit={handleSubmit}>
+                        <div className="mb-3">
+                            <label>Email</label>
+                            <input type="email" className="form-control"
+                                value={email} onChange={(e) => setEmail(e.target.value)} required />
                         </div>
+                        <div className="mb-3">
+                            <label>Password</label>
+                            <input type="password" className="form-control"
+                                value={password} onChange={(e) => setPassword(e.target.value)} required />
+                        </div>
+                        <button type="submit" className="btn btn-primary w-100">Login</button>
+                    </form>
+                    <div className="mt-3 text-center">
+                        <small>Don't have an account? <a href="/register">Register</a></small>
                     </div>
                 </div>
             </div>

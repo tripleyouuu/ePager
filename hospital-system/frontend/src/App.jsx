@@ -9,6 +9,7 @@ import RescheduleAppointment from './pages/RescheduleAppointment';
 import DoctorDashboard from './pages/DoctorDashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { AlertProvider } from './context/AlertContext';
 
 const RoleRoute = ({ children, allowedRoles }) => {
     const { user } = useAuth();
@@ -34,51 +35,53 @@ function App() {
     return (
         <Router>
             <AuthProvider>
-                <Navbar />
-                <Routes>
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/register" element={<Register />} />
+                <AlertProvider>
+                    <Navbar />
+                    <Routes>
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/register" element={<Register />} />
 
-                    <Route path="/" element={<RootRedirect />} />
+                        <Route path="/" element={<RootRedirect />} />
 
-                    <Route path="/appointments" element={
-                        <RoleRoute allowedRoles={['USER']}>
-                            <MyAppointments />
-                        </RoleRoute>
-                    } />
+                        <Route path="/appointments" element={
+                            <RoleRoute allowedRoles={['USER']}>
+                                <MyAppointments />
+                            </RoleRoute>
+                        } />
 
-                    <Route path="/book/:doctorId" element={
-                        <RoleRoute allowedRoles={['USER']}>
-                            <BookAppointment />
-                        </RoleRoute>
-                    } />
+                        <Route path="/book/:doctorId" element={
+                            <RoleRoute allowedRoles={['USER']}>
+                                <BookAppointment />
+                            </RoleRoute>
+                        } />
 
-                    <Route path="/reschedule/:appointmentId" element={
-                        <RoleRoute allowedRoles={['USER']}>
-                            <RescheduleAppointment />
-                        </RoleRoute>
-                    } />
+                        <Route path="/reschedule/:appointmentId" element={
+                            <RoleRoute allowedRoles={['USER']}>
+                                <RescheduleAppointment />
+                            </RoleRoute>
+                        } />
 
-                    <Route path="/doctor-dashboard" element={
-                        <RoleRoute allowedRoles={['DOCTOR']}>
-                            <DoctorDashboard />
-                        </RoleRoute>
-                    } />
+                        <Route path="/doctor-dashboard" element={
+                            <RoleRoute allowedRoles={['DOCTOR']}>
+                                <DoctorDashboard />
+                            </RoleRoute>
+                        } />
 
-                    <Route path="/admin-dashboard" element={
-                        <RoleRoute allowedRoles={['ADMIN']}>
-                            <AdminDashboard />
-                        </RoleRoute>
-                    } />
+                        <Route path="/admin-dashboard" element={
+                            <RoleRoute allowedRoles={['ADMIN']}>
+                                <AdminDashboard />
+                            </RoleRoute>
+                        } />
 
-                    {/* Fallback for Dashboard route if meant for generic or patient */}
-                    <Route path="/dashboard" element={
-                        <RoleRoute allowedRoles={['USER']}>
-                            <Dashboard />
-                        </RoleRoute>
-                    } />
+                        {/* Fallback for Dashboard route if meant for generic or patient */}
+                        <Route path="/dashboard" element={
+                            <RoleRoute allowedRoles={['USER']}>
+                                <Dashboard />
+                            </RoleRoute>
+                        } />
 
-                </Routes>
+                    </Routes>
+                </AlertProvider>
             </AuthProvider>
         </Router>
     );

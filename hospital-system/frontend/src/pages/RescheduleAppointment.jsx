@@ -1,111 +1,151 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import Calendar from 'react-calendar';
 import api from '../api/axios';
+import { useAlert } from '../context/AlertContext';
 
 const RescheduleAppointment = () => {
     const { appointmentId } = useParams();
-    const [doctors, setDoctors] = useState([]);
-    const [doctorId, setDoctorId] = useState('');
-    const [date, setDate] = useState('');
+    const [date, setDate] = useState(null);
     const [slots, setSlots] = useState([]);
     const [selectedSlot, setSelectedSlot] = useState('');
-    const [msg, setMsg] = useState('');
+    const [doctorId, setDoctorId] = useState(null); // We need this to fetch availability
+    const { showAlert } = useAlert();
     const navigate = useNavigate();
 
+    // Helper to format date
+    const formatDate = (dateObj) => {
+        return dateObj.toISOString().split('T')[0];
+    };
+
+    const formatTime = (timeStr) => {
+        if (!timeStr) return '';
+        return timeStr.split(':').slice(0, 2).join(':');
+    };
+
+    // Initialize: Fetch appointment details to get the doctor ID
     useEffect(() => {
-        const fetchData = async () => {
+        const fetchAppointmentDetails = async () => {
             try {
-                // Fetch doctors
-                const doctorsRes = await api.get('/doctors');
-                setDoctors(doctorsRes.data);
-
-                // Fetch current appointment details to pre-fill
-                const appointmentRes = await api.get(`/appointments/${appointmentId}`);
-                if (appointmentRes.data) {
-                    setDoctorId(appointmentRes.data.doctor.id);
-                } else if (doctorsRes.data.length > 0) {
-                    setDoctorId(doctorsRes.data[0].id);
+                const response = await api.get(`/appointments/${appointmentId}`);
+                if (response.data && response.data.doctor) {
+                    setDoctorId(response.data.doctor.id);
+                } else {
+                    showAlert("Could not retrieve appointment details.", "error");
                 }
-
             } catch (err) {
-                console.error("Error fetching data", err);
+                console.error("Error fetching appointment", err);
+                showAlert("Failed to load appointment details.", "error");
             }
         };
-        fetchData();
-    }, [appointmentId]);
+        fetchAppointmentDetails();
+    }, [appointmentId, showAlert]);
 
+    // Fetch slots when date and doctor are available
     useEffect(() => {
         if (date && doctorId) {
+            const dateStr = formatDate(date);
             const fetchSlots = async () => {
                 try {
-                    const response = await api.get(`/doctors/${doctorId}/availability?date=${date}`);
+                    const response = await api.get(`/doctors/${doctorId}/availability?date=${dateStr}`);
                     setSlots(response.data);
+                    setSelectedSlot('');
                 } catch (err) {
-                    setSlots([]);
                     console.error("Error fetching slots", err);
+                    setSlots([]);
+                    showAlert("Failed to fetch available slots.", "error");
                 }
             };
             fetchSlots();
         }
-    }, [date, doctorId]);
+    }, [date, doctorId, showAlert]);
 
     const handleReschedule = async () => {
+        if (!date || !selectedSlot) return;
+
         try {
             await api.put(`/appointments/${appointmentId}/reschedule`, {
-                doctorId,
-                date,
+                doctorId, // Keeping the same doctor
+                date: formatDate(date),
                 startTime: selectedSlot
             });
-            alert('Appointment Rescheduled Successfully!');
-            navigate('/appointments');
+            showAlert('Appointment Rescheduled Successfully!', 'info', () => {
+                navigate('/appointments');
+            });
         } catch (err) {
-            setMsg('Error rescheduling: ' + (err.response?.data?.error || err.message));
+            const errorMsg = err.response?.data?.error || err.message;
+            showAlert('Error rescheduling appointment: ' + errorMsg, 'error');
         }
     };
 
+    const tileDisabled = ({ date, view }) => {
+        if (view === 'month') {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const maxDate = new Date();
+            maxDate.setDate(today.getDate() + 7);
+
+            return date < today || date > maxDate;
+        }
+    };
+
+    if (!doctorId) {
+        return <div className="container mt-4 text-center"><p>Loading appointment details...</p></div>;
+    }
+
     return (
         <div className="container mt-4">
-            <h2>Reschedule Appointment</h2>
-            {msg && <div className="alert alert-danger">{msg}</div>}
+            <div className="card" style={{ maxWidth: '800px', margin: '0 auto' }}>
+                <h2 className="text-center mb-3">Reschedule Appointment</h2>
 
-            <div className="mb-3">
-                <label>Select Doctor (Optional):</label>
-                <select className="form-select" value={doctorId} onChange={(e) => setDoctorId(e.target.value)}>
-                    {doctors.map(doc => (
-                        <option key={doc.id} value={doc.id}>{doc.name} ({doc.specialization})</option>
-                    ))}
-                </select>
-            </div>
+                <div className="row d-flex" style={{ gap: '2rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+                    <div style={{ flex: '1', minWidth: '300px' }}>
+                        <h4 style={{ fontSize: '1.1rem', marginBottom: '10px' }}>Select New Date</h4>
+                        <Calendar
+                            onChange={setDate}
+                            value={date}
+                            tileDisabled={tileDisabled}
+                            minDate={new Date()}
+                        />
+                        {date && (
+                            <p className="mt-3 text-center" style={{ fontWeight: '500', color: 'var(--primary-color)' }}>
+                                Selected: {date.toDateString()}
+                            </p>
+                        )}
+                    </div>
 
-            <div className="mb-3">
-                <label>Select Date:</label>
-                <input type="date" className="form-control"
-                    value={date}
-                    onChange={(e) => setDate(e.target.value)}
-                    min={new Date(new Date().setDate(new Date().getDate() + 1)).toISOString().split('T')[0]}
-                    max={new Date(new Date().setDate(new Date().getDate() + 7)).toISOString().split('T')[0]}
-                />
-            </div>
+                    <div style={{ flex: '1', minWidth: '300px' }}>
+                        <h4 style={{ fontSize: '1.1rem', marginBottom: '10px' }}>Select Time Slot</h4>
 
-            {date && (
-                <div className="mb-3">
-                    <label>Available Slots:</label>
-                    <div className="d-flex flex-wrap gap-2">
-                        {slots.length > 0 ? slots.map(slot => (
-                            <button key={slot.time}
-                                className={`btn ${selectedSlot === slot.time ? 'btn-success' : slot.status === 'BOOKED' ? 'btn-secondary disabled' : 'btn-outline-primary'}`}
-                                onClick={() => slot.status === 'AVAILABLE' && setSelectedSlot(slot.time)}
-                                disabled={slot.status === 'BOOKED'}>
-                                {slot.time}
+                        {!date && <p style={{ color: 'var(--text-secondary)' }}>Please select a date first.</p>}
+
+                        {date && (
+                            <div className="d-flex flex-wrap gap-2">
+                                {slots.length > 0 ? slots.map(slot => (
+                                    <button key={slot.time}
+                                        className={`btn ${selectedSlot === slot.time ? 'btn-primary' : slot.status === 'BOOKED' ? 'btn-secondary disabled' : 'btn-outline-primary'}`}
+                                        onClick={() => slot.status === 'AVAILABLE' && setSelectedSlot(slot.time)}
+                                        disabled={slot.status === 'BOOKED'}
+                                        style={{ minWidth: '80px', whiteSpace: 'nowrap' }}>
+                                        {formatTime(slot.time)}
+                                    </button>
+                                )) : <p>No slots available for this date.</p>}
+                            </div>
+                        )}
+
+                        <div className="mt-4">
+                            <button
+                                className="btn btn-primary w-100"
+                                onClick={handleReschedule}
+                                disabled={!date || !selectedSlot}
+                                style={{ padding: '12px' }}
+                            >
+                                Confirm Reschedule
                             </button>
-                        )) : <p>No slots available</p>}
+                        </div>
                     </div>
                 </div>
-            )}
-
-            <button className="btn btn-warning mt-3" onClick={handleReschedule} disabled={!selectedSlot}>
-                Confirm Reschedule
-            </button>
+            </div>
         </div>
     );
 };
