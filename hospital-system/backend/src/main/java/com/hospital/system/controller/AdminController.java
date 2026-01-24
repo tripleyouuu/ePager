@@ -53,11 +53,11 @@ public class AdminController {
 
     @GetMapping("/appointments/doctor/{doctorId}")
     public ResponseEntity<List<Appointment>> getDoctorAppointments(@PathVariable String doctorId) {
-        return ResponseEntity.ok(appointmentRepository.findByDoctorId(doctorId));
+        return ResponseEntity.ok(appointmentRepository.findByDoctorIdOrderByAppointmentDateAscStartTimeAsc(doctorId));
     }
 
     @GetMapping("/appointments/patient/{userId}")
     public ResponseEntity<List<Appointment>> getPatientAppointments(@PathVariable String userId) {
-        return ResponseEntity.ok(appointmentRepository.findByUserId(userId));
+        return ResponseEntity.ok(appointmentRepository.findByUserIdOrderByAppointmentDateAscStartTimeAsc(userId));
     }
 }

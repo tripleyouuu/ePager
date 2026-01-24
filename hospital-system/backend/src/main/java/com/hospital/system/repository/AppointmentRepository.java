@@ -8,11 +8,12 @@ import java.util.List;
 
 // appointment repository interface
 public interface AppointmentRepository extends MongoRepository<Appointment, String> {
-        List<Appointment> findByDoctorIdAndAppointmentDate(String doctorId, LocalDate appointmentDate);
+        List<Appointment> findByDoctorIdAndAppointmentDateOrderByStartTimeAsc(String doctorId,
+                        LocalDate appointmentDate);
 
-        List<Appointment> findByUserId(String userId);
+        List<Appointment> findByUserIdOrderByAppointmentDateAscStartTimeAsc(String userId);
 
-        List<Appointment> findByDoctorId(String doctorId);
+        List<Appointment> findByDoctorIdOrderByAppointmentDateAscStartTimeAsc(String doctorId);
 
         boolean existsByDoctorIdAndAppointmentDateAndStartTime(String doctorId, LocalDate appointmentDate,
                         LocalTime startTime);

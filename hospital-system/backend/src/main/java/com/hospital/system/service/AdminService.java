@@ -67,7 +67,8 @@ public class AdminService {
                 .orElseThrow(() -> new RuntimeException("Doctor not found"));
 
         // marks appointments unavailable
-        List<com.hospital.system.entity.Appointment> appointments = appointmentRepository.findByDoctorId(doctorId);
+        List<com.hospital.system.entity.Appointment> appointments = appointmentRepository
+                .findByDoctorIdOrderByAppointmentDateAscStartTimeAsc(doctorId);
         for (com.hospital.system.entity.Appointment app : appointments) {
             app.setStatus(com.hospital.system.entity.AppointmentStatus.UNAVAILABLE);
             // keeps doctor ref temporarily
@@ -88,7 +89,8 @@ public class AdminService {
             return;
 
         // marks appointments unavailable
-        List<com.hospital.system.entity.Appointment> appointments = appointmentRepository.findByUserId(userId);
+        List<com.hospital.system.entity.Appointment> appointments = appointmentRepository
+                .findByUserIdOrderByAppointmentDateAscStartTimeAsc(userId);
         for (com.hospital.system.entity.Appointment app : appointments) {
             app.setStatus(com.hospital.system.entity.AppointmentStatus.UNAVAILABLE);
             appointmentRepository.save(app);

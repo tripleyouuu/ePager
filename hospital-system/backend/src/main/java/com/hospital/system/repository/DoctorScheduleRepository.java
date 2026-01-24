@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface DoctorScheduleRepository extends MongoRepository<DoctorSchedule, String> {
-    List<DoctorSchedule> findByDoctorId(String doctorId);
+    List<DoctorSchedule> findByDoctorIdOrderByDateAscStartTimeAsc(String doctorId);
 
     Optional<DoctorSchedule> findByAppointmentId(String appointmentId);
 }

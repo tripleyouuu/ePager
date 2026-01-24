@@ -88,7 +88,7 @@ public class AppointmentService {
     }
 
     public List<Appointment> getAppointmentsForUser(String userId) {
-        return appointmentRepository.findByUserId(userId);
+        return appointmentRepository.findByUserIdOrderByAppointmentDateAscStartTimeAsc(userId);
     }
 
     public Appointment getAppointmentById(String appointmentId, String userId) {

@@ -40,7 +40,8 @@ public class DoctorService {
 
     public List<com.hospital.system.dto.SlotDTO> getAvailableSlots(String doctorId, LocalDate date) {
         Doctor doctor = getDoctorById(doctorId);
-        List<Appointment> appointments = appointmentRepository.findByDoctorIdAndAppointmentDate(doctorId, date);
+        List<Appointment> appointments = appointmentRepository
+                .findByDoctorIdAndAppointmentDateOrderByStartTimeAsc(doctorId, date);
 
         List<LocalTime> bookedSlots = appointments.stream()
                 .filter(a -> a.getStatus() != AppointmentStatus.CANCELLED)
@@ -62,6 +63,6 @@ public class DoctorService {
     public List<com.hospital.system.entity.DoctorSchedule> getDoctorAppointments(String doctorEmail) {
         Doctor doctor = doctorRepository.findByEmail(doctorEmail)
                 .orElseThrow(() -> new RuntimeException("Doctor not found for email: " + doctorEmail));
-        return doctorScheduleRepository.findByDoctorId(doctor.getId());
+        return doctorScheduleRepository.findByDoctorIdOrderByDateAscStartTimeAsc(doctor.getId());
     }
 }
