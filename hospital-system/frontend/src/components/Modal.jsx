@@ -41,8 +41,8 @@ const Modal = ({ isOpen, type, message, onClose, onConfirm }) => {
                 <div className="d-flex justify-content-end gap-2">
                     {type === 'confirmation' ? (
                         <>
-                            <button className="btn btn-secondary" onClick={onClose}>Cancel</button>
-                            <button className="btn btn-primary" onClick={onConfirm}>Confirm</button>
+                            <button className="btn btn-secondary" onClick={onClose} style={{ minWidth: '80px' }}>Cancel</button>
+                            <button className="btn btn-primary" onClick={onConfirm} style={{ marginTop: 0, minWidth: '80px' }}>Confirm</button>
                         </>
                     ) : (
                         <button className="btn btn-primary" onClick={onClose}>Close</button>

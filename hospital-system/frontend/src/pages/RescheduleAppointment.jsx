@@ -12,11 +12,27 @@ const RescheduleAppointment = () => {
     const [selectedSlot, setSelectedSlot] = useState('');
     const [doctorId, setDoctorId] = useState(null); // fetch availability doctor id
     const { showAlert } = useAlert();
+    const [userAppointments, setUserAppointments] = useState([]);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const fetchUserAppointments = async () => {
+            try {
+                const response = await api.get('/appointments');
+                setUserAppointments(response.data);
+            } catch (err) {
+                console.error("Error fetching user appointments", err);
+            }
+        };
+        fetchUserAppointments();
+    }, []);
 
     // date formatter
     const formatDate = (dateObj) => {
-        return dateObj.toISOString().split('T')[0];
+        const year = dateObj.getFullYear();
+        const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+        const day = String(dateObj.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
     };
 
     const formatTime = (timeStr) => {
@@ -86,7 +102,7 @@ const RescheduleAppointment = () => {
             const maxDate = new Date();
             maxDate.setDate(today.getDate() + 7);
 
-            return date < today || date > maxDate;
+            return date <= today || date > maxDate;
         }
     };
 
@@ -96,17 +112,18 @@ const RescheduleAppointment = () => {
 
     return (
         <div className="container mt-4">
-            <div className="card" style={{ maxWidth: '800px', margin: '0 auto' }}>
-                <h2 className="text-center mb-3">Reschedule Appointment</h2>
+            <div className="card" style={{ margin: '0 auto' }}>
+                <h2 className="text-center mb-4">Reschedule Appointment</h2>
 
-                <div className="row d-flex" style={{ gap: '2rem', flexWrap: 'wrap', justifyContent: 'center' }}>
-                    <div style={{ flex: '1', minWidth: '300px' }}>
-                        <h4 style={{ fontSize: '1.1rem', marginBottom: '10px' }}>Select New Date</h4>
+                <div className="row">
+                    <div className="col-md-6 d-flex flex-column align-items-center border-end">
                         <Calendar
                             onChange={setDate}
                             value={date}
                             tileDisabled={tileDisabled}
                             minDate={new Date()}
+                            prev2Label={null}
+                            next2Label={null}
                         />
                         {date && (
                             <p className="mt-3 text-center" style={{ fontWeight: '500', color: 'var(--primary-color)' }}>
@@ -115,35 +132,49 @@ const RescheduleAppointment = () => {
                         )}
                     </div>
 
-                    <div style={{ flex: '1', minWidth: '300px' }}>
-                        <h4 style={{ fontSize: '1.1rem', marginBottom: '10px' }}>Select Time Slot</h4>
+                    <div className="col-md-6 ps-md-5">
+                        <h4 className="mb-4">Select Time Slot</h4>
 
-                        {!date && <p style={{ color: 'var(--text-secondary)' }}>Please select a date first.</p>}
-
-                        {date && (
-                            <div className="d-flex flex-wrap gap-2">
-                                {slots.length > 0 ? slots.map(slot => (
-                                    <button key={slot.time}
-                                        className={`btn ${selectedSlot === slot.time ? 'btn-primary' : slot.status === 'BOOKED' ? 'btn-secondary disabled' : 'btn-outline-primary'}`}
-                                        onClick={() => slot.status === 'AVAILABLE' && setSelectedSlot(slot.time)}
-                                        disabled={slot.status === 'BOOKED'}
-                                        style={{ minWidth: '80px', whiteSpace: 'nowrap' }}>
-                                        {formatTime(slot.time)}
-                                    </button>
-                                )) : <p>No slots available for this date.</p>}
+                        {!date && (
+                            <div className="d-flex align-items-center justify-content-center h-50">
+                                <p style={{ color: 'var(--text-secondary)' }}>Please select a date from the calendar.</p>
                             </div>
                         )}
 
-                        <div className="mt-4">
-                            <button
-                                className="btn btn-primary w-100"
-                                onClick={handleReschedule}
-                                disabled={!date || !selectedSlot}
-                                style={{ padding: '12px' }}
-                            >
-                                Confirm Reschedule
-                            </button>
-                        </div>
+                        {date && (
+                            <>
+                                <div className="d-flex flex-wrap gap-2 mb-4" style={{ maxHeight: '400px', overflowY: 'auto' }}>
+                                    {slots.length > 0 ? slots.map(slot => {
+                                        const isConflict = userAppointments.some(app =>
+                                            app.id !== appointmentId && // exclude current appointment
+                                            app.appointmentDate === formatDate(date) &&
+                                            app.startTime.startsWith(slot.time.substring(0, 5)) &&
+                                            app.status !== 'CANCELLED'
+                                        );
+                                        const isBooked = slot.status === 'BOOKED' || isConflict;
+
+                                        return (
+                                            <button key={slot.time}
+                                                className={`btn btn-slot ${selectedSlot === slot.time ? 'btn-slot-selected' : isBooked ? 'btn-secondary disabled' : 'btn-outline-primary'}`}
+                                                onClick={() => !isBooked && setSelectedSlot(slot.time)}
+                                                disabled={isBooked}
+                                                style={{ minWidth: '100px', flex: '1 0 auto' }}>
+                                                {formatTime(slot.time)} {isConflict && '(Booked)'}
+                                            </button>
+                                        )
+                                    }) : <p>No slots available for this date.</p>}
+                                </div>
+
+                                <button
+                                    className="btn btn-primary w-100 mt-auto btn-no-animation"
+                                    onClick={handleReschedule}
+                                    disabled={!date || !selectedSlot}
+                                    style={{ padding: '15px', fontSize: '1.1rem' }}
+                                >
+                                    Confirm Reschedule
+                                </button>
+                            </>
+                        )}
                     </div>
                 </div>
             </div>

@@ -1,5 +1,5 @@
 // admin dashboard
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import api from '../api/axios';
 import { useAlert } from '../context/AlertContext';
 
@@ -46,11 +46,19 @@ const AdminDashboard = () => {
         }
     };
 
+    const appointmentsRef = useRef(null);
+
+    // ... existing code ...
+
     const fetchAppointments = async (id, type) => {
         try {
             const res = await api.get(`/admin/appointments/${type}/${id}`);
             setAppointments(res.data);
             setSelectedEntityId(id);
+            // scroll to appointments table
+            setTimeout(() => {
+                appointmentsRef.current?.scrollIntoView({ behavior: 'smooth' });
+            }, 100);
         } catch (err) {
             console.error(err);
         }
@@ -98,12 +106,28 @@ const AdminDashboard = () => {
             <ul className="nav nav-tabs mb-4" style={{ display: 'flex', gap: '10px', listStyle: 'none', borderBottom: '1px solid #ddd', paddingBottom: '10px' }}>
                 <li className="nav-item">
                     <button
-                        className={`btn ${activeTab === 'doctors' ? 'btn-primary' : 'btn-outline-primary'}`}
+                        className="btn"
+                        style={{
+                            backgroundColor: activeTab === 'doctors' ? 'var(--primary-color)' : 'white',
+                            color: activeTab === 'doctors' ? 'white' : 'var(--primary-color)',
+                            border: '1px solid var(--primary-color)',
+                            transform: 'none',
+                            boxShadow: 'none',
+                            marginTop: 0
+                        }}
                         onClick={() => setActiveTab('doctors')}>Manage Doctors</button>
                 </li>
                 <li className="nav-item">
                     <button
-                        className={`btn ${activeTab === 'patients' ? 'btn-primary' : 'btn-outline-primary'}`}
+                        className="btn"
+                        style={{
+                            backgroundColor: activeTab === 'patients' ? 'var(--primary-color)' : 'white',
+                            color: activeTab === 'patients' ? 'white' : 'var(--primary-color)',
+                            border: '1px solid var(--primary-color)',
+                            transform: 'none',
+                            boxShadow: 'none',
+                            marginTop: 0
+                        }}
                         onClick={() => setActiveTab('patients')}>Manage Patients</button>
                 </li>
             </ul>
@@ -113,7 +137,7 @@ const AdminDashboard = () => {
                     <div className="card mb-4">
                         <h4 className="card-header">Create New Doctor</h4>
                         <div className="card-body">
-                            <form onSubmit={handleCreateDoctor} className="d-flex flex-wrap gap-3">
+                            <form onSubmit={handleCreateDoctor} className="d-flex flex-wrap gap-3 align-items-center">
                                 <div style={{ flex: 1, minWidth: '200px' }}>
                                     <input type="text" className="form-control" placeholder="Name" required
                                         value={newDoctor.name} onChange={e => setNewDoctor({ ...newDoctor, name: e.target.value })} />
@@ -130,8 +154,8 @@ const AdminDashboard = () => {
                                     <input type="text" className="form-control" placeholder="Specialization" required
                                         value={newDoctor.specialization} onChange={e => setNewDoctor({ ...newDoctor, specialization: e.target.value })} />
                                 </div>
-                                <div style={{ width: '100%' }}>
-                                    <button type="submit" className="btn btn-primary">Create Doctor</button>
+                                <div style={{ flex: '0 0 auto' }}>
+                                    <button type="submit" className="btn btn-primary" style={{ marginTop: 0 }}>Create Doctor</button>
                                 </div>
                             </form>
                         </div>
@@ -205,7 +229,7 @@ const AdminDashboard = () => {
 
             {/* appointment viewer */}
             {selectedEntityId && (
-                <div className="mt-4 card">
+                <div className="mt-4 card" ref={appointmentsRef}>
                     <h3>Appointments for Selected User</h3>
                     {appointments.length > 0 ? (
                         <div style={{ overflowX: 'auto' }}>
@@ -213,6 +237,9 @@ const AdminDashboard = () => {
                                 <thead style={{ backgroundColor: 'var(--primary-color)', color: 'white' }}>
                                     <tr>
                                         <th style={{ padding: '12px 15px', textAlign: 'left' }}>ID</th>
+                                        <th style={{ padding: '12px 15px', textAlign: 'left' }}>
+                                            {activeTab === 'doctors' ? 'Patient' : 'Doctor'}
+                                        </th>
                                         <th style={{ padding: '12px 15px', textAlign: 'left' }}>Date</th>
                                         <th style={{ padding: '12px 15px', textAlign: 'left' }}>Time</th>
                                         <th style={{ padding: '12px 15px', textAlign: 'left' }}>Status</th>
@@ -222,6 +249,11 @@ const AdminDashboard = () => {
                                     {appointments.map(app => (
                                         <tr key={app.id} style={{ borderBottom: '1px solid #f0f0f0' }}>
                                             <td style={{ padding: '12px 15px' }}>{app.id}</td>
+                                            {activeTab === 'doctors' ? (
+                                                <td style={{ padding: '12px 15px' }}>{app.user ? app.user.name : 'Unknown/Deleted'}</td>
+                                            ) : (
+                                                <td style={{ padding: '12px 15px' }}>{app.doctor ? app.doctor.name : 'Unknown/Deleted'}</td>
+                                            )}
                                             <td style={{ padding: '12px 15px' }}>{app.appointmentDate}</td>
                                             <td style={{ padding: '12px 15px' }}>{app.startTime}</td>
                                             <td style={{ padding: '12px 15px' }}>{app.status}</td>
