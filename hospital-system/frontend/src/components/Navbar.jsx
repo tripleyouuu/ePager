@@ -1,11 +1,12 @@
 // navigation bar component
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import logo from '../assets/logo.png';
 
 const Navbar = () => {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
 
     const handleLogout = () => {
         logout();
@@ -23,63 +24,63 @@ const Navbar = () => {
                     </div>
                 </Link>
 
-                <ul className="navbar-nav">
-                    {user ? (
-                        <>
-                            <li className="nav-item">
-                                <span className="nav-link" style={{ cursor: 'default' }}>
-                                    {user.role === 'DOCTOR' ? `Welcome, Dr. ${user.name}!` :
-                                        user.role === 'ADMIN' ? 'Welcome, Admin' :
-                                            `Welcome, ${user.name}!`}
-                                </span>
-                            </li>
-
-                            {user.role === 'USER' && (
+                {/* Watermark for auth pages, otherwise Navigation items */}
+                {(location.pathname === '/login' || location.pathname === '/register') ? (
+                    <span style={{
+                        color: 'rgba(255, 255, 255, 0.8)',
+                        fontSize: '0.9rem',
+                        fontStyle: 'italic',
+                        fontWeight: '500'
+                    }}>
+                        SpringBoot Project by Sai Sevithaa
+                    </span>
+                ) : (
+                    <ul className="navbar-nav">
+                        {user ? (
+                            <>
                                 <li className="nav-item">
-                                    <Link className="nav-link" to="/appointments">My Appointments</Link>
+                                    <span className="nav-link" style={{ cursor: 'default' }}>
+                                        {user.role === 'DOCTOR' ? `Welcome, Dr. ${user.name}!` :
+                                            user.role === 'ADMIN' ? 'Welcome, Admin' :
+                                                `Welcome, ${user.name}!`}
+                                    </span>
                                 </li>
-                            )}
 
-                            {user.role === 'DOCTOR' && (
+                                {user.role === 'USER' && (
+                                    <li className="nav-item">
+                                        <Link className="nav-link" to="/appointments">My Appointments</Link>
+                                    </li>
+                                )}
+
                                 <li className="nav-item">
-                                    <Link className="nav-link" to="/doctor-dashboard">Dashboard</Link>
+                                    <button className="btn btn-outline-primary"
+                                        style={{ borderColor: 'rgba(255,255,255,0.5)', color: 'white' }}
+                                        onClick={handleLogout}
+                                        onMouseOver={(e) => {
+                                            e.currentTarget.style.backgroundColor = 'white';
+                                            e.currentTarget.style.color = 'var(--primary-color)';
+                                        }}
+                                        onMouseOut={(e) => {
+                                            e.currentTarget.style.backgroundColor = 'transparent';
+                                            e.currentTarget.style.color = 'white';
+                                        }}
+                                    >
+                                        Log Out
+                                    </button>
                                 </li>
-                            )}
-
-                            {user.role === 'ADMIN' && (
+                            </>
+                        ) : (
+                            <>
                                 <li className="nav-item">
-                                    <Link className="nav-link" to="/admin-dashboard">Dashboard</Link>
+                                    <Link className="nav-link" to="/login">Login</Link>
                                 </li>
-                            )}
-
-                            <li className="nav-item">
-                                <button className="btn btn-outline-primary"
-                                    style={{ borderColor: 'rgba(255,255,255,0.5)', color: 'white' }}
-                                    onClick={handleLogout}
-                                    onMouseOver={(e) => {
-                                        e.currentTarget.style.backgroundColor = 'white';
-                                        e.currentTarget.style.color = 'var(--primary-color)';
-                                    }}
-                                    onMouseOut={(e) => {
-                                        e.currentTarget.style.backgroundColor = 'transparent';
-                                        e.currentTarget.style.color = 'white';
-                                    }}
-                                >
-                                    Log Out
-                                </button>
-                            </li>
-                        </>
-                    ) : (
-                        <>
-                            <li className="nav-item">
-                                <Link className="nav-link" to="/login">Login</Link>
-                            </li>
-                            <li className="nav-item">
-                                <Link className="btn btn-secondary" style={{ textDecoration: 'none' }} to="/register">Register</Link>
-                            </li>
-                        </>
-                    )}
-                </ul>
+                                <li className="nav-item">
+                                    <Link className="btn btn-secondary" style={{ textDecoration: 'none' }} to="/register">Register</Link>
+                                </li>
+                            </>
+                        )}
+                    </ul>
+                )}
             </div>
         </nav>
     );
