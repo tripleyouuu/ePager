@@ -91,12 +91,12 @@ const MyAppointments = () => {
                 <tbody>
                     {appointments.map(app => (
                         <tr key={app.id}>
-                            <td>{app.doctor.name}</td>
+                            <td>{app.doctor ? app.doctor.name : 'Doctor Unavailable'}</td>
                             <td>{app.appointmentDate}</td>
                             <td>{app.startTime}</td>
                             <td>{app.status}</td>
                             <td>
-                                {app.status === 'BOOKED' && (
+                                {(app.status === 'BOOKED' && app.doctor) && (
                                     <>
                                         <button className="btn btn-danger btn-sm me-2" onClick={() => handleCancel(app.id)}>
                                             Cancel
@@ -123,15 +123,15 @@ const MyAppointments = () => {
                             </div>
                             <div className="modal-body">
                                 {msg && <div className="alert alert-danger">{msg}</div>}
-                                <p><strong>Doctor:</strong> {selectedAppointment?.doctor.name}</p>
+                                <p><strong>Doctor:</strong> {selectedAppointment?.doctor ? selectedAppointment.doctor.name : 'Unavailable'}</p>
 
                                 <div className="mb-3">
                                     <label>Select New Date:</label>
                                     <input type="date" className="form-control"
                                         value={newDate}
                                         onChange={(e) => setNewDate(e.target.value)}
-                                        min={new Date(new Date().setDate(new Date().getDate() + 1)).toISOString().split('T')[0]}
-                                        max={new Date(new Date().setDate(new Date().getDate() + 7)).toISOString().split('T')[0]}
+                                        min={new Date(Date.now() + 86400000).toISOString().split('T')[0]}
+                                        max={new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0]}
                                     />
                                 </div>
 

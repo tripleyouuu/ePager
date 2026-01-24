@@ -49,8 +49,8 @@ const BookAppointment = () => {
                 <input type="date" className="form-control"
                     value={date}
                     onChange={(e) => setDate(e.target.value)}
-                    min={new Date(new Date().setDate(new Date().getDate() + 1)).toISOString().split('T')[0]}
-                    max={new Date(new Date().setDate(new Date().getDate() + 7)).toISOString().split('T')[0]}
+                    min={new Date(Date.now() + 86400000).toISOString().split('T')[0]}
+                    max={new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0]}
                 />
             </div>
 

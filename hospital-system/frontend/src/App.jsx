@@ -7,6 +7,7 @@ import BookAppointment from './pages/BookAppointment';
 import MyAppointments from './pages/MyAppointments';
 import RescheduleAppointment from './pages/RescheduleAppointment';
 import DoctorDashboard from './pages/DoctorDashboard';
+import AdminDashboard from './pages/AdminDashboard';
 import { AuthProvider, useAuth } from './context/AuthContext';
 
 const RoleRoute = ({ children, allowedRoles }) => {
@@ -14,7 +15,9 @@ const RoleRoute = ({ children, allowedRoles }) => {
     if (!user) return <Navigate to="/login" />;
     if (!allowedRoles.includes(user.role)) {
         // Redirect to their appropriate dashboard if they try to access unauthorized route
-        return user.role === 'DOCTOR' ? <Navigate to="/doctor-dashboard" /> : <Navigate to="/dashboard" />;
+        if (user.role === 'DOCTOR') return <Navigate to="/doctor-dashboard" />;
+        if (user.role === 'ADMIN') return <Navigate to="/admin-dashboard" />;
+        return <Navigate to="/dashboard" />;
     }
     return children;
 };
@@ -22,7 +25,9 @@ const RoleRoute = ({ children, allowedRoles }) => {
 const RootRedirect = () => {
     const { user } = useAuth();
     if (!user) return <Navigate to="/login" />;
-    return user.role === 'DOCTOR' ? <Navigate to="/doctor-dashboard" /> : <Navigate to="/dashboard" />;
+    if (user.role === 'DOCTOR') return <Navigate to="/doctor-dashboard" />;
+    if (user.role === 'ADMIN') return <Navigate to="/admin-dashboard" />;
+    return <Navigate to="/dashboard" />;
 };
 
 function App() {
@@ -57,6 +62,12 @@ function App() {
                     <Route path="/doctor-dashboard" element={
                         <RoleRoute allowedRoles={['DOCTOR']}>
                             <DoctorDashboard />
+                        </RoleRoute>
+                    } />
+
+                    <Route path="/admin-dashboard" element={
+                        <RoleRoute allowedRoles={['ADMIN']}>
+                            <AdminDashboard />
                         </RoleRoute>
                     } />
 

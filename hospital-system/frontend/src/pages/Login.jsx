@@ -14,6 +14,8 @@ const Login = () => {
     if (user) {
         if (user.role === 'DOCTOR') {
             return <Navigate to="/doctor-dashboard" />;
+        } else if (user.role === 'ADMIN') {
+            return <Navigate to="/admin-dashboard" />;
         } else {
             return <Navigate to="/dashboard" />;
         }
@@ -27,6 +29,8 @@ const Login = () => {
             login(userData);
             if (userData.role === 'DOCTOR') {
                 navigate('/doctor-dashboard');
+            } else if (userData.role === 'ADMIN') {
+                navigate('/admin-dashboard');
             } else {
                 navigate('/dashboard');
             }

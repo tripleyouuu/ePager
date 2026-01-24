@@ -37,7 +37,23 @@ public class DataInitializer {
                                         "evan@hospital.com");
 
                         System.out.println("Database reset and Doctors seeded successfully");
+
+                        // Create Admin
+                        createAdmin(userRepository, passwordEncoder, "Admin", "admin@hospital.com");
+                        System.out.println("Admin seeded successfully");
                 };
+        }
+
+        private void createAdmin(UserRepository userRepository, PasswordEncoder passwordEncoder, String name,
+                        String email) {
+                if (userRepository.findByEmail(email).isEmpty()) {
+                        User user = new User();
+                        user.setName(name);
+                        user.setEmail(email);
+                        user.setPassword(passwordEncoder.encode("password"));
+                        user.setRole(Role.ADMIN);
+                        userRepository.save(user);
+                }
         }
 
         private void createDoctor(DoctorRepository doctorRepository, UserRepository userRepository,
