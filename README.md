@@ -1,53 +1,66 @@
-# Hospital Appointment System
+# ePager - Medical Appointment Manager
 
-A production-grade Hospital Appointment System built with Spring Boot (Backend) and React (Frontend).
+ePager is a modern, full-stack hospital appointment management system designed to streamline the connection between patients, doctors, and administrators. It's built with a robust Spring Boot backend and a dynamic React frontend.
 
 ## Features
-- **Roles**: Admin, Doctor, User.
-- **Appointments**: 1-hour slots, strict validation, no double-booking.
-- **Doctors**: 5 pre-seeded doctors with different specializations.
-- **Availability**: Dynamic slot generation based on working hours (09:00 - 15:00).
-- **Security**: JWT Authentication, Stateless Session.
+
+- **Role-Based Access Control**: Secure login for Patients, Doctors, and Administrators.
+- **Smart Scheduling**: 
+  - Dynamic time-slot generation based on doctor and patient availability.
+  - Prevention of double-booking and invalid dates.
+  - Interactive calendar interface for seamless booking.
+- **Real-Time Dashboards**:
+  - **Doctor Dashboard**: Auto-refreshes every 5 seconds to show upcoming appointments.
+  - **Admin Dashboard**: Comprehensive management of doctors, patients, and system records.
 
 ## Tech Stack
-- **Backend**: Java 17, Spring Boot 3, Spring Data MongoDB, Spring Security (JWT).
-- **Frontend**: React (Vite), Bootstrap, Axios.
-- **Database**: MongoDB.
 
-## Prerequisites
-- Java 17+
+### Backend
+- **Framework**: Spring Boot 3 (Java 17)
+- **Database**: MongoDB
+- **Security**: Spring Security with JWT Authentication
+- **Documentation**: Swagger UI / OpenAPI
+
+### Frontend
+- **Framework**: React 18 (Vite)
+- **Styling**: CSS Modules
+- **HTTP Client**: Axios
+- **Components**: React Calendar, Custom Modals
+
+## Getting Started
+
+### Prerequisites
+- Java 17 or higher
 - Node.js & npm
-- MongoDB (running on localhost:27017)
+- MongoDB (running on `localhost:27017`)
 
-## running the Application
-
-### 1. Backend
+### 1. Start the Backend
 ```bash
 cd hospital-system/backend
 mvn spring-boot:run
 ```
-The backend will start on `http://localhost:8080`.
-Swagger UI: `http://localhost:8080/swagger-ui.html`
+The server will start on `http://localhost:8080`.
+- **API Docs**: `http://localhost:8080/swagger-ui.html`
 
-### 2. Frontend
+### 2. Start the Frontend
 ```bash
 cd hospital-system/frontend
 npm install
 npm run dev
 ```
-The frontend will start on `http://localhost:5173`.
+The application will be accessible at `http://localhost:5173`.
 
-## Usage
-1.  **Register** a new user.
-2.  **Login** to access the dashboard.
-3.  **View Doctors** and their details.
-4.  **Book Appointment**: Select a date and a time slot.
-5.  **My Appointments**: View and cancel your bookings.
+## Usage Guide
 
-## API Documentation
-The API is fully documented using Swagger/OpenAPI.
-Access it at: `http://localhost:8080/swagger-ui.html`
+1.  **Register**: Create a new patient account via the signup page.
+2.  **Book Appointment**:
+    - Select a doctor from the dashboard.
+    - Choose a date using the intuitive calendar.
+    - Pick an available time slot and confirm.
+3.  **Manage Appointments**:
+    - Go to "My Appointments" to view your schedule.
+    - Easy rescheduling and cancellation options available.
+4.  **Doctor Access**: Log in as a doctor to view your real-time schedule.
+5.  **Admin Access**: Log in as admin to onboard new doctors and manage users.
 
-## Default Users
-You can register your own users.
-Doctors are pre-seeded on first run.
+---
