@@ -1,6 +1,6 @@
 # ePager - Medical Appointment Manager
 
-ePager is a modern, full-stack hospital appointment management system designed to streamline the connection between patients, doctors, and administrators. It's built with a robust Spring Boot backend and a dynamic React frontend.
+ePager is a modern, full-stack hospital appointment management system designed to streamline the connection between patients, doctors, and administrators. It's built with a robust Spring Boot backend and a dynamic React frontend. Disclaimer: This was developed for a project in my year 2 of CompSci. It isn't meant to be taken seriously.
 
 ## Features
 
