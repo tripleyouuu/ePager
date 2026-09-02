@@ -1,11 +1,11 @@
-<img width="2932" height="1604" alt="sbp3" src="https://github.com/user-attachments/assets/bfb5ce90-9fe3-4265-8943-e2e3175d2190" /># ePager - Medical Appointment Manager
+# ePager - Medical Appointment Manager
 
 ePager is a modern, full-stack hospital appointment management system designed to streamline the connection between patients, doctors, and administrators. It's built with a robust Spring Boot backend and a dynamic React frontend. Disclaimer: This was developed for a project in my year 2 of CompSci. It isn't meant to be taken seriously.
 
 ## Features
 
 - **Role-Based Access Control**: Secure login for Patients, Doctors, and Administrators.
-<img width="2902" height="1604" alt="sbp1" src="https://github.com/user-attachments/assets/9ec4550d-fee4-4c11-80e5-31a0a575327e" />
+  <img width="2902" height="1604" alt="sbp1" src="https://github.com/user-attachments/assets/9ec4550d-fee4-4c11-80e5-31a0a575327e" />
   
 - **Smart Scheduling**: 
   - Dynamic time-slot generation based on doctor and patient availability.
